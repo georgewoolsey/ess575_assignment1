@@ -9,7 +9,7 @@ editor_options:
   chunk_output_type: console
 knit: (function(inputFile, encoding){ 
     out_dir <- '../';
-    rmarkdown::render(inputFile, encoding = encoding, output_file=file.path(dirname(inputFile), out_dir, 'assignment1.pdf')) 
+    rmarkdown::render(inputFile, encoding = encoding, output_file=file.path(dirname(inputFile), out_dir, 'description_assignment1_GWoolsey.pdf')) 
   })
 ---
 
@@ -104,7 +104,7 @@ my_plot
 
 ```{r, warning=F, message=F, results='hide', include=FALSE}
 # Export PDF
-pdf("../ess575_assignment1_GWoolsey.pdf", paper = "USr", height = 8.5, width = 11)
+pdf("../plot_assignment1_GWoolsey.pdf", paper = "USr", height = 8.5, width = 11)
 print(my_plot)
 dev.off()  
 
