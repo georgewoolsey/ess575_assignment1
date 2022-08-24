@@ -1,0 +1,122 @@
+---
+title: "ESS 575 Homework 1"
+author: "George Woolsey"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  pdf_document:
+    toc: false
+editor_options: 
+  chunk_output_type: console
+knit: (function(inputFile, encoding){ 
+    out_dir <- '../';
+    rmarkdown::render(inputFile, encoding = encoding, output_file=file.path(dirname(inputFile), out_dir, 'assignment1.pdf')) 
+  })
+---
+
+```{r setup, include=FALSE}
+# load packages
+library(tidyverse)
+library(lubridate)
+library(viridis)
+library(scales)
+```
+
+# Weibull Tree Height-Diameter Growth Function
+
+Tree height-diameter relationship is an important in forestry for the calculation of timber volume and stand description (Zhang 1997). Both tree height and diameter are requeired for the calcuation of volume, yet there are instances when tree heights or tree diameters are not measured for each tree. In these instances height-diameter equations are derived from the sample trees. The Weibull tree height-diameter function explains biological growth by adding an expanding factor to the Weibull distribution function (Yang, Kozak, & Smith 1978): 
+
+$$
+HT = a \times [ 1 - e^{(-b \times DBH^c)} ]
+$$
+Where:
+
+* *HT* is the tree height in meters
+
+* *a*, *b*, *c* are regression coefficients to be estimated
+
+* *DBH* is the tree diameter at breast height 137.16 cm (4.5 feet) from the ground in cm
+
+
+```{r, warning=F, message=F, results='hide', include=FALSE}
+# set data range
+dta <- data.frame(
+  dbh = seq(2, 230, 2)
+)
+# define coefficients
+  a <- 72.82
+  b <- 0.0156
+  c <- 0.8634
+# define function
+weibull_fn <- function(x) {
+  # return
+  return(a * ( 1 - exp( -b * (x^c) ) ) )
+}
+
+# plot
+my_plot <- ggplot(dta, aes(x = dbh)) + 
+  geom_function(
+    fun = weibull_fn
+    , size = 2
+    , alpha = 0.8
+  ) +
+  annotate(
+    'text'
+    , x = 35
+    , y = 50
+    , label = "HT == a %*% bgroup('[',1 - italic(e)^(-b %*% DBH^c),']') "
+    , parse = TRUE
+    , size = 4
+  ) +
+  labs(
+    title = "Weibull Tree Height-Diameter Growth Function"
+    , subtitle = expression(paste(
+        "example based on coefficients for Ponderosa Pine ("
+        , italic("Pinus ponderosa")
+        , ")"
+      ))
+    , caption = paste0(
+        "where: a = "
+        , as.character(a)
+        , "; b = "
+        , as.character(b)
+        , "; c = "
+        , as.character(c)
+      )
+  ) +
+  annotate(
+    "text"
+    , x = max(dta$dbh) * .9
+    , y = 2
+    , label = "created by: George Woolsey"
+    , size = 3
+  ) +
+  xlab("Tree DBH (cm)") +
+  ylab("Tree Height (m)") +
+  theme_bw() +
+  theme(
+    legend.position="none"
+  ) 
+```
+
+```{r, warning=F, message=F, results='hide', fig.cap='The Weibull tree height-diameter function to explain biological growth', echo=FALSE}
+my_plot
+```
+
+```{r, warning=F, message=F, results='hide', include=FALSE}
+# Export PDF
+pdf("../ess575_assignment1_GWoolsey.pdf", paper = "USr", height = 8.5, width = 11)
+print(my_plot)
+dev.off()  
+
+```
+
+
+\newpage
+
+## Literature Cited
+
+**Yang, R. C., Kozak, A., & Smith, J. H. G. (1978).** The potential of Weibull-type functions as flexible growth curves. *Canadian Journal of Forest Research*, **8(4)**, 424-431.
+
+
+**Zhang, L. (1997).** Cross-validation of non-linear growth functions for modelling tree height–diameter relationships. *Annals of Botany*, **79(3)**, 251-257.
+
